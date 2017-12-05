@@ -44,7 +44,7 @@ std::vector< int > stub_vector(std::vector< std::vector< int > >& g) {
   return ret;
 }
 
-std::vector< std::vector< int > > random_network(int n0, int m0, int T) {
+std::vector< std::vector< int > > random_network(int n0, int m0, int T, std::vector< int >& it) {
   auto g = random_tree(n0);
   auto stubs = stub_vector(g);
   for(int i = 0; i < T; ++i) {
@@ -63,36 +63,23 @@ std::vector< std::vector< int > > random_network(int n0, int m0, int T) {
       stubs.push_back(x);
       stubs.push_back(vertex_id);
     }
+    for(auto timestep : it) {
+      if(i+1 >= it.back()) {
+        std::cout << timestep << " " << i+1 << " " << g[n0 + timestep - 1].size() << std::endl;
+      }
+    }
   }
   return g;
 }
-
 
 int main(int argc, char **argv) {
   int n0 = atoi(argv[1]);
   int m0 = atoi(argv[2]);
   int T  = atoi(argv[3]);
-  auto rg = random_network(n0, m0, T);
-  auto degd = degree_sequence(rg);
-  bool first = true;
-  for(int v : degd) {
-    if(!first) {
-      std::cout << " ";
-    }
-    first = false;
-    std::cout << v;
+  std::vector< int > it;
+  for(int i = 4; i < argc; ++i) {
+    it.push_back(atoi(argv[i]));
   }
-  std::cout << std::endl;
-  /*
-  std::cout << "graph G {" << std::endl;
-  for(int i = 0; i < int(rg.size()); ++i) {
-    auto& adjlist = rg[i];
-    for(auto adj : adjlist) {
-     if(i < adj) {
-      std::cout << "\"" << adj << "\" -- \"" << i << "\"" << std::endl;
-     }
-    }
-  }
-  std::cout << "}" << std::endl;
-  */
+  std::sort(it.begin(), it.end());
+  auto rg = random_network(n0, m0, T, it);
 }
