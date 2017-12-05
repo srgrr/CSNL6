@@ -4,6 +4,16 @@
 #include <cstdlib>
 #include <set>
 
+std::vector< std::vector< int > > simple_cycle(int n0) {
+  std::vector< std::vector< int > > g(n0);
+  for(int i = 0; i < n0; ++i) {
+    int j = (i + 1) % n0;
+    g[i].push_back(j);
+    g[j].push_back(i);
+  }
+  return g;
+}
+
 std::vector< std::vector< int > > random_tree(int n0) {
   std::vector< std::vector< int > > ret(n0, std::vector<  int >());
   for(int i = 1; i < n0; ++i) {
