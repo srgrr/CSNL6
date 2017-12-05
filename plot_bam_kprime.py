@@ -17,7 +17,6 @@ def main():
   for line in lines:
     if line:
       index, timestep, degree = list(map(int, line.rstrip().split()))
-      print (index, timestep, degree)
       xs[index].append(timestep)
       ys[index].append(degree)
   plt.figure('Evolution of kprime')
