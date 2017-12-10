@@ -1,4 +1,4 @@
-dat = read.csv("CSNL6/out2.txt", sep = " ", header = FALSE)
+dat = read.csv("out2.txt", sep = " ", header = FALSE)
 colnames(dat) = c("node", "t", "k")
 dat1 = dat[which(dat[,1] == 1),]
 dat10 = dat[which(dat[,1] == 10),]
@@ -66,13 +66,6 @@ s_func = function(nlm){
   sqrt(deviance(nlm)/df.residual(nlm))
 }
 
-# source = read.table("list.txt", 
-#                     header = TRUE,               
-#                     as.is = c("language","file")
-# )
-# 
-# langs = source$language
-
 # Datasets with all the results
 results = data.frame()
 deviance = data.frame()
@@ -121,7 +114,18 @@ for (lang in 1:length(dat)) {
   # dev[j] = RSS
   # s_list[j] = s_0
   # j = j + 1
+  print("     model0")
   
+  mod0 = lm(k ~ t - 1, tab)
+  a0_opt = coef(mod0)["t"]
+  
+  res[i] = a0_opt
+  i = i + 1
+  
+  aic[j] = AIC(mod0)
+  dev[j] = deviance(mod0)
+  s_list[j] = s_func(mod0)
+  j = j + 1
   
   ######## model 1 #######
   # formula1 = function(n, b) (n/2)^b 
@@ -188,57 +192,104 @@ for (lang in 1:length(dat)) {
   s_list[j] = s_func(mod3)
   j  = j +1
   
+  ###### model 0+ #######
+  print("     model0+")
+  
+  mod0p = lm(k ~ t, tab)
+  
+  a0p_opt = coef(mod0p)["t"]
+  d0p_opt = coef(mod0p)[1]
+  
+  res[i] = a0p_opt
+  i = i + 1
+  res[i] = d0p_opt
+  i = i + 1
+  
+  dev[j] = deviance(mod0p)
+  aic[j] = AIC(mod0p)
+  s_list[j] = s_func(mod0p)
+  j  = j +1
   
   ###### model 1+ #######
   # f(n) = (n/2)^b + d
+  print("     model1+")
   
-  # b1p_init = b1_opt
-  # d1p_init = 0
+  a1p_init = a1_opt
+  d1p_init = 0
+
+  mod1p = nls(k ~ (a * t^0.5) + d, tab,
+              start = list(a = a1p_init, d = d1p_init), trace = FALSE)
+
+  a1p_opt = coef(mod1p)["a"]
+  d1p_opt = coef(mod1p)["d"]
+
+
+  res[i] = a1p_opt
+  i = i + 1
+  res[i] = d1p_opt
+  i = i + 1
+
+  dev[j] = deviance(mod1p)
+  aic[j] = AIC(mod1p)
+  s_list[j] = s_func(mod1p)
+  j  = j +1
+
+  
+  ###### model 2+ #######
+  # f(n) = a*n^b + d
+  print("     model2+")
+
+  a2p_init = a2_opt
+  b2p_init = b2_opt
+  d2p_init = 0
+
+  mod2p = nls(k ~ (a * t^b) + d, tab,
+              start = list(a = a2p_init, b = b2p_init, d = d2p_init), trace = FALSE)
+
+  a2p_opt = coef(mod2p)["a"]
+  b2p_opt = coef(mod2p)["b"]
+  d2p_opt = coef(mod2p)["d"]
+
+  res[i] = a2p_opt
+  i = i + 1
+  res[i] = b2p_opt
+  i = i + 1
+  res[i] = d2p_opt
+  i = i + 1
+
+  dev[j] = deviance(mod2p)
+  aic[j] = AIC(mod2p)
+  s_list[j] = s_func(mod2p)
+  j  = j + 1
+  
+  
+  ###### model 3+ #######
+  print("     model3+")
+  ### this one doesn't work beacuse the starting points are too far form the optimum
+  
+  # a3p_init = a3_opt
+  # c3p_init = c3_opt
+  # d3p_init = -1
   # 
-  # mod1p = nls(k ~ (t/2)^b + d, tab,
-  #             start = list(b = b1p_init, d = d1p_init), trace = FALSE)
+  # mod3p = nls(k ~ (a * exp(c * t)) + d, tab,
+  #             start = list(a = a3p_init, c = c3p_init, d = d3p_init), trace = FALSE)
   # 
-  # b1p_opt = coef(mod1p)["b"]
-  # d1p_opt = coef(mod1p)["d"]
+  # a3p_opt = coef(mod2p)["a"]
+  # c3p_opt = coef(mod2p)["b"]
+  # d3p_opt = coef(mod2p)["d"]
   # 
-  # 
-  # res[i] = b1p_opt
+  # res[i] = a3p_opt
   # i = i + 1
-  # res[i] = d1p_opt
+  # res[i] = b3p_opt
+  # i = i + 1
+  # res[i] = d3p_opt
   # i = i + 1
   # 
-  # dev[j] = deviance(mod1p)
-  # aic[j] = AIC(mod1p)
-  # s_list[j] = s_func(mod1p)
-  # j  = j +1
-  # 
-  # 
-  # ###### model 2+ #######
-  # # f(n) = a*n^b + d
-  # 
-  # a2p_init = a2_opt
-  # b2p_init = b2_opt
-  # d2p_init = 1.5
-  # 
-  # mod2p = nls(k ~ a * t^b + d, tab,
-  #             start = list(a = a2p_init, b = b2p_init, d = d2p_init), trace = FALSE)
-  # 
-  # a2p_opt = coef(mod2p)["a"]
-  # b2p_opt = coef(mod2p)["b"]
-  # d2p_opt = coef(mod2p)["d"]
-  # 
-  # res[i] = a2p_opt
-  # i = i + 1
-  # res[i] = b2p_opt
-  # i = i + 1
-  # res[i] = d2p_opt
-  # i = i + 1
-  # 
-  # dev[j] = deviance(mod2p)
-  # aic[j] = AIC(mod2p)
-  # s_list[j] = s_func(mod2p)
+  # dev[j] = deviance(mod3p)
+  # aic[j] = AIC(mod3p)
+  # s_list[j] = s_func(mod3p)
   # j  = j + 1
-  # 
+
   
   ##### populate dataframes #####
   
@@ -247,7 +298,7 @@ for (lang in 1:length(dat)) {
   AIC = rbind(AIC, aic)
   S = rbind(S, s_list)
   
-  models = c("mod1", "mod2", "mod3")
+  models = c("mod0", "mod1", "mod2", "mod3", "mod0p", "mod1p", "mod2p", "mod3p")
   min_aic = which.min(aic)
   min_s = which.min(s_list)
   if (min_aic == min_s) {
@@ -255,9 +306,9 @@ for (lang in 1:length(dat)) {
     barplotfile = sprintf("plot_%s.pdf",dat[lang])
     pdf(file = barplotfile)    # open pdf file
     plottitle = sprintf("Best fit for %s",dat[lang])
-    plot(log(tab$t), log(tab$k),
-         xlab = "log(t)", ylab = "log(mean dependency length)", main = plottitle)
-    lines(log(sort(tab$t)), log(fitted(get(models[min_aic]))[order(tab$t)]), col = "green")
+    plot(tab$t, tab$k,
+         xlab = "log(t)", ylab = "log(mean dependency length)", main = plottitle, type = "l")
+    lines(sort(tab$t), fitted(get(models[min_aic]))[order(tab$t)], col = "green")
     grid()
     dev.off()
   }
@@ -279,13 +330,13 @@ for (lang in 1:length(dat)) {
     }
   }
 }
-colnames(results) = c("2.a", "2.a", "2.b", "3.a", "3.c")
-colnames(deviance) = c("1","2", "3")
-colnames(AIC) = c("1","2", "3")
-colnames(S) = c("1","2", "3")
+colnames(results) = c("0.a", "1.a", "2.a", "2.b", "3.a", "3.c", "0+.a", "0+.d","1+.a", 
+                      "1+.d", "2+.a", "2+.b", "2+.d") #, "3+.a", "3+.c", "3+.d")
+colnames(deviance) = c("0","1","2", "3", "0+", "1+", "2+") #, "3")
+colnames(AIC) = c("0","1","2", "3", "0+", "1+", "2+") #, "3")
+colnames(S) = c("0","1","2", "3", "0+", "1+", "2+") #, "3")
 rownames(results) = dat
 rownames(deviance) = dat
 rownames(AIC) = dat
 rownames(S) = dat
-
 
