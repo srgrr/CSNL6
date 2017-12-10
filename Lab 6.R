@@ -74,6 +74,7 @@ S = data.frame()
 
 
 dat = c("dat1","dat10", "dat100", "dat1000")
+time = c(1,10,100,1000)
 # Computing all the results for each language
 for (lang in 1:length(dat)) {
   print(dat[lang])
@@ -86,12 +87,9 @@ for (lang in 1:length(dat)) {
   aic = c()
   s_list = c()
   
-  # lang_name = source$language[lang]
-  # tab = read.table(source$file[lang], header = FALSE)
-  # colnames(tab) = c("t","degree_2nd_moment", "k")
   tab = eval(parse(text = dat[lang]))
 
-  # lmod1 = lm(k ~ t, tab)
+  lmod1 = lm(k ~ t, tab)
   # 
   # if (group_variance(tab, lang) == FALSE){
   #   tab = aggregate(tab, list(tab$t), mean)
@@ -100,6 +98,8 @@ for (lang in 1:length(dat)) {
   # else {
   #   paste(cat("The", dat[lang], "language HAS the homoskedasticity property\n"))
   # }
+  
+  
   
   ####### model 0 #######
   # formula0 = (n+1)/3
@@ -309,6 +309,15 @@ for (lang in 1:length(dat)) {
     plot(tab$t, tab$k,
          xlab = "log(t)", ylab = "log(mean dependency length)", main = plottitle, type = "l")
     lines(sort(tab$t), fitted(get(models[min_aic]))[order(tab$t)], col = "green")
+    
+    k = function(t) {
+      m0 = 5
+      f = m0*t^0.5
+      out = f/sqrt(time[lang])
+      return(out)
+    }
+    
+    curve(k, from = 1000, to = 100000 ,col="red", add= T)
     grid()
     dev.off()
   }
@@ -339,4 +348,5 @@ rownames(results) = dat
 rownames(deviance) = dat
 rownames(AIC) = dat
 rownames(S) = dat
+
 
