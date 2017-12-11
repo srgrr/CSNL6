@@ -66,6 +66,18 @@ get_AIC <- function(m2logL, K, N, name) {
   c(m2logL + (2.0*K*N)/(N-K-1.0), name)
 }
 
+zeta_prob <- function(k) {
+  k^-3.0 / zeta(3.0);
+}
+
+approximation_function <- function(k) {
+  ((2.0 * 25.0 * 99990.0) / (100000.0)) * k^-3.0
+}
+
+quadratic_f <- function(x) {
+  x*x
+}
+
 # A function that given a degree sequence
 # computes and returns a list of pairs
 # (AIC_1, name_1), (AIC_2, name_2), ..., (AIC_5, name_5)
