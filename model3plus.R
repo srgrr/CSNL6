@@ -1,21 +1,3 @@
-
-# With this script we study the fitness of the model
-#     f(n) = a*n^b
-# where a,b are real constant values.
-#
-# To do this, we use the nls function to obtain the parameters
-# of a non-linear model that best fits the input data.
-# Moreover, since it needs some initial values to work with,
-# we use the logarithmic transformation of the model:
-#     g(n) = log(f(n)) = log(a) + b*log(n) = A + B*log(n)
-# and obtain the values A and B for the linear model g.
-#
-# Then, the initial values a_initial and b_initial are calculated
-# as follows:
-#
-#   a_inital = exp(A)
-#   b_inital = B
-
 make.plots <- function(dir, lang, data, trick.model, fit.model) {
   
   make.title.trick.model <- function() {
@@ -29,8 +11,9 @@ make.plots <- function(dir, lang, data, trick.model, fit.model) {
   make.title.fit.model <- function() {
     a = coef(fit.model)["a"]
     c = coef(fit.model)["c"]
+    d = coef(fit.model)["d"]
     
-    title = paste0(lang, " (y = ",round(a, 3), "* e^(", round(c, 3)," * t))")
+    title = paste0(lang, " (y = ", round(a, 3), "* e^(", round(c, 3)," * t) + ", round(d, 3), ")")
     return (title)
   }
   
@@ -74,11 +57,12 @@ study.fit.model <- function(dataset) {
   
   a_initial = exp(coef(trick.model)[1])
   c_initial = coef(trick.model)[2]
+  d_initial = 0
   
   fit.model = nls(
-    formula = k ~ a * exp(c * t),
+    formula = k ~ a * exp(c * t) + d,
     data = LANG,
-    start = list(a = a_initial, c = c_initial),
+    start = list(a = a_initial, c = c_initial, d = d_initial),
     trace = FALSE
   )
   
@@ -86,7 +70,7 @@ study.fit.model <- function(dataset) {
   AIC_ <- AIC(fit.model)
   s_ <- sqrt(RSS_/df.residual(fit.model))
   
-  make.plots("figures/model3/", dataset, LANG, trick.model, fit.model)
+  make.plots("figures/model3plus/", dataset, LANG, trick.model, fit.model)
   
   return (list(
     RSS = RSS_,
