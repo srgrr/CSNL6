@@ -58,7 +58,7 @@ make.plots <- function(dir, lang, data, trick.model, fit.model) {
 	dev.off()
 }
 
-study.fit.model2 <- function(lang) {
+study.fit.model <- function(lang) {
 	filename = paste0("data/", lang, "_dependency_tree_metrics.txt")
 
 	LANG = read.table(filename, header = FALSE)
@@ -95,14 +95,11 @@ study.fit.model2 <- function(lang) {
 	))
 }
 
-all_langs = c("Arabic", "Basque", "Catalan",
-			  "Chinese", "Czech", "English",
-			  "Greek", "Hungarian", "Italian",
-			  "Turkish")
+all_datasets = c("dat1", "dat100", "dat1000")
 
-for (lang in all_langs) {
-	message(lang, ":")
-	r = study.fit.model2(lang)
+for (dataset in all_datasets) {
+	message(dataset, ":")
+	r = study.fit.model(dataset)
 	#message("    RSS=", round(r$RSS, 3))
 	message("    AIC=", round(r$AIC, 3))
 	message("    s=  ", round(r$s, 3))
