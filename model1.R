@@ -28,45 +28,45 @@ make.plots <- function(dir, lang, data, trick.model, fit.model) {
   make.title.fit.model <- function() {
     a = coef(fit.model)[1]
     
-    title = paste0(lang, "a * ", t, " ^ 0.5")
+    title = paste0(lang, "a * ", a, " ^ 0.5")
     return (title)
   }
   
   plot_name = paste0(dir, lang, "-loglog-scale.png")
   png(filename = plot_name)
-  plot(x = data$vertices,
-       y = data$degree_2nd_moment,
+  plot(x = data$t,
+       y = data$k,
        xlab = "t",
        ylab = "k",
        log = "xy",
        main = make.title.trick.model()
   )
-  lines(data$vertices, fitted(fit.model), col = "green")
+  lines(data$t, fitted(fit.model), col = "green")
   dev.off()
   
   plot_name = paste0(dir, lang, ".png")
   png(filename = plot_name)
-  plot(x = data$vertices,
-       y = data$degree_2nd_moment,
+  plot(x = data$t,
+       y = data$k,
        xlab = "t",
        ylab = "k",
        main = make.title.fit.model()
   )
-  lines(data$vertices, fitted(fit.model), col = "green")
+  lines(data$t, fitted(fit.model), col = "green")
   dev.off()
 }
 
 study.fit.model <- function(dataset) {
   filename = paste0(dataset, ".csv")
   
-  LANG = read.table(filename, header = TRUE, row.names = 1)
+  LANG = read.table(filename, header = TRUE, row.names = 1, sep = ",")
   colnames(LANG) = c("t", "k")
   LANG = LANG[order(LANG$t), ]
   
   #mean_LANG = aggregate(LANG, list(LANG$vertices), mean)
   
   trick.model = lm(
-    formula = log(a) +  0.5 * log(t) ~ log(k),
+    formula = log(k) - 0.5 * log(t) ~ 1,
     LANG
   )
   
@@ -83,7 +83,7 @@ study.fit.model <- function(dataset) {
   AIC_ <- AIC(fit.model)
   s_ <- sqrt(RSS_/df.residual(fit.model))
   
-  make.plots("figures/model1/", lang, LANG, trick.model, fit.model)
+  make.plots("figures/model1/", dataset, LANG, trick.model, fit.model)
   
   return (list(
     RSS = RSS_,
