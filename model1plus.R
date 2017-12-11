@@ -1,3 +1,13 @@
+library(functional)
+
+k_func = function(t, den){
+  m0 = 5
+  f = m0*t^0.5
+  out = f/sqrt(den)
+  return(out)
+}
+
+
 make.plots <- function(dir, lang, data, trick.model, fit.model) {
   
   make.title.trick.model <- function() {
@@ -11,7 +21,7 @@ make.plots <- function(dir, lang, data, trick.model, fit.model) {
     a = coef(fit.model)["a"]
     d = coef(fit.model)["d"]
     
-    title = paste0(lang, round(a, 3), " * t ^ 0.5 + ", round(d, 3))
+    title = paste0(lang, "(y = ",round(a, 3), " * t ^ 0.5 + ", round(d, 3), ")")
     return (title)
   }
   
@@ -36,6 +46,8 @@ make.plots <- function(dir, lang, data, trick.model, fit.model) {
        main = make.title.fit.model()
   )
   lines(data$t, fitted(fit.model), col = "green")
+  k_f = Curry(k_func, den = eval(parse(text = substr(lang, start = 4, stop = nchar(lang)))))
+  curve(k_f, from = 1000, to = 100000 ,col="red", add= T)
   dev.off()
 }
 

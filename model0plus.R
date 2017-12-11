@@ -1,3 +1,11 @@
+library(functional)
+
+k_func = function(t, den){
+  m0 = 5
+  f = m0*t^0.5
+  out = f/sqrt(den)
+  return(out)
+}
 
 make.plots <- function(dir, lang, data, fit.model) {
   
@@ -18,6 +26,8 @@ make.plots <- function(dir, lang, data, fit.model) {
        main = make.title.fit.model()
   )
   lines(data$t, fitted(fit.model), col = "green")
+  k_f = Curry(k_func, den = eval(parse(text = substr(lang, start = 4, stop = nchar(lang)))))
+  curve(k_f, from = 1000, to = 100000 ,col="red", add= T)
   dev.off()
 }
 

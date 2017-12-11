@@ -1,20 +1,11 @@
+library(functional)
 
-# With this script we study the fitness of the model
-#     f(n) = a*n^b
-# where a,b are real constant values.
-#
-# To do this, we use the nls function to obtain the parameters
-# of a non-linear model that best fits the input data.
-# Moreover, since it needs some initial values to work with,
-# we use the logarithmic transformation of the model:
-#     g(n) = log(f(n)) = log(a) + b*log(n) = A + B*log(n)
-# and obtain the values A and B for the linear model g.
-#
-# Then, the initial values a_initial and b_initial are calculated
-# as follows:
-#
-#   a_inital = exp(A)
-#   b_inital = B
+k_func = function(t, den){
+  m0 = 5
+  f = m0*t^0.5
+  out = f/sqrt(den)
+  return(out)
+}
 
 make.plots <- function(dir, lang, data, trick.model, fit.model) {
   
@@ -30,7 +21,7 @@ make.plots <- function(dir, lang, data, trick.model, fit.model) {
     a = coef(fit.model)["a"]
     c = coef(fit.model)["c"]
     
-    title = paste0(lang, " (y = ",round(a, 3), "* e^(", round(c, 3)," * t))")
+    title = paste0(lang, " (y = ", round(a, 3), "* e^(", round(c, 3)," * t))")
     return (title)
   }
   
@@ -55,6 +46,8 @@ make.plots <- function(dir, lang, data, trick.model, fit.model) {
        main = make.title.fit.model()
   )
   lines(data$t, fitted(fit.model), col = "green")
+  k_f = Curry(k_func, den = eval(parse(text = substr(lang, start = 4, stop = nchar(lang)))))
+  curve(k_f, from = 1000, to = 100000 ,col="red", add= T)
   dev.off()
 }
 
