@@ -74,15 +74,9 @@ int main(int argc, char **argv) {
   int T  = atoi(argv[3]);
   auto rg = random_network(n0, m0, T);
   auto degd = degree_sequence(rg);
-  bool first = true;
   for(int v : degd) {
-    if(!first) {
-      std::cout << " ";
-    }
-    first = false;
-    std::cout << v;
+    std::cout << v << std::endl;
   }
-  std::cout << std::endl;
   /*
   std::cout << "graph G {" << std::endl;
   for(int i = 0; i < int(rg.size()); ++i) {
