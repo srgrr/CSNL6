@@ -43,7 +43,7 @@ displaced_geometric <- function(q) {
 }
 
 zeta_function_gamma_two <- function() {
-  -2.0*Mprime - N*log((pi^2)/6.0)
+  -3.0*Mprime - N*log(zeta(3.0))
 }
 
 zeta_function <- function(gamma) {
@@ -90,15 +90,15 @@ get_aics <- function(degree_sequence) {
     list(lambda = M/N),
     list(q = N/M),
     list(a = 1),
-    list(gamma = 2.0),
-    list(kmax = N, gamma = 2.0)
+    list(gamma = 3.0),
+    list(kmax = N, gamma = 3.0)
   )
   # Lower bounds for each function
   lower_bounds <- c(
     c(0.01),
     c(0.01),
     c(-Inf),
-    c(1.01),
+    c(3.0),
     c(10.0000001, 2.00)
   )
   # Upper bound for each function
@@ -106,7 +106,7 @@ get_aics <- function(degree_sequence) {
     c(2*mean(degree_sequence)),
     c(0.99999),
     c(+Inf),
-    c(+Inf),
+    c(3.0000002),
     c(N, +Inf)
   )
 
@@ -147,10 +147,12 @@ get_aics <- function(degree_sequence) {
                          to_add
     )
   }
+  print('5')
   to_add <- mle(minuslogl = functions[[5]],
-                start  = list(kmax = max(degree_sequence), gamma = 2.0),
+                start  = list(kmax = max(degree_sequence), gamma = 3.0),
                 method = "L-BFGS-B",
-                lower  = c(3.0000001, 2.00)
+                lower  = c(3.00, 3.00),
+                upper  = c(+Inf, 3.0000002)
                 # avoid NaNs an log0s...
                 #upper  = c(max(degree_sequence), min(10, mean(degree_sequence)))
                   )
