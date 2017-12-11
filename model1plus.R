@@ -54,6 +54,7 @@ study.fit.model <- function(dataset) {
   )
   
   a_initial = exp(coef(trick.model)[1])
+  d_initial = 0
   
   fit.model = nls(
     formula = k ~ (a * t^0.5) + d,
@@ -66,7 +67,7 @@ study.fit.model <- function(dataset) {
   AIC_ <- AIC(fit.model)
   s_ <- sqrt(RSS_/df.residual(fit.model))
   
-  make.plots("figures/model1/", dataset, LANG, trick.model, fit.model)
+  make.plots("figures/model1plus/", dataset, LANG, trick.model, fit.model)
   
   return (list(
     RSS = RSS_,
