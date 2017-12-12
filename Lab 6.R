@@ -1,4 +1,4 @@
-dat = read.csv("out2.txt", sep = " ", header = FALSE)
+dat = read.csv("data_random_attach.txt", sep = " ", header = FALSE)
 colnames(dat) = c("node", "t", "k")
 dat1 = dat[which(dat[,1] == 1),]
 dat10 = dat[which(dat[,1] == 10),]
@@ -73,7 +73,7 @@ AIC = data.frame()
 S = data.frame()
 
 
-dat = c("dat1","dat10", "dat100", "dat1000")
+dat = c("rdat1","rdat10", "rdat100", "rdat1000")
 time = c(1,10,100,1000)
 # Computing all the results for each language
 for (lang in 1:length(dat)) {
