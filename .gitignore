@@ -2,4 +2,6 @@ bam
 bam_kprime
 bam_random
 bam_kprime_random
+bam_no_growth
+bam_kprime_no_growth
 .Rproj.user
