@@ -68,7 +68,7 @@ study.fit.model <- function(dataset) {
   
   a_initial = exp(coef(trick.model)[1])
   c_initial = coef(trick.model)[2]
-  d_initial = 0
+  d_initial = 0.5
   
   fit.model = nls(
     formula = k ~ a * exp(c * t) + d,
