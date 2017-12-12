@@ -1,13 +1,18 @@
 library(functional)
 
-k_func = function(t, den){
+k_func1 = function(t){
   m0 = 5
   f = m0*t^0.5
-  out = f/sqrt(den)
-  return(out)
+  return(f)
 }
 
-make.plots <- function(dir, lang, data, trick.model, fit.model) {
+k_func2 = function(t){
+  m0 = 5
+  f = m0 * log(m0 + t -1)
+  return(f)
+}
+
+make.plots <- function(dir, lang, data, trick.model, fit.model, model) {
   
   make.title.trick.model <- function() {
     a = coef(trick.model)[1]
@@ -47,12 +52,16 @@ make.plots <- function(dir, lang, data, trick.model, fit.model) {
        main = make.title.fit.model()
   )
   lines(data$t, fitted(fit.model), col = "green")
-  k_f = Curry(k_func, den = eval(parse(text = substr(lang, start = 4, stop = nchar(lang)))))
-  curve(k_f, from = 1000, to = 100000 ,col="red", add= T)
+  if (model == "pref"){
+    curve(k_func1, from = 1000, to = 100000 ,col="red", add= T)
+  }
+  else if(model == "rand"){
+    curve(k_func2, from = 1000, to = 100000 ,col="red", add= T)
+  }
   dev.off()
 }
 
-study.fit.model <- function(dataset) {
+study.fit.model <- function(dataset, model) {
   filename = paste0(dataset, ".csv")
   
   LANG = read.table(filename, header = TRUE, row.names = 1, sep = ",")
@@ -68,7 +77,7 @@ study.fit.model <- function(dataset) {
   
   a_initial = exp(coef(trick.model)[1])
   c_initial = coef(trick.model)[2]
-  d_initial = 0.5
+  d_initial = 0
   
   fit.model = nls(
     formula = k ~ a * exp(c * t) + d,
@@ -81,7 +90,14 @@ study.fit.model <- function(dataset) {
   AIC_ <- AIC(fit.model)
   s_ <- sqrt(RSS_/df.residual(fit.model))
   
-  make.plots("figures/model3plus/", dataset, LANG, trick.model, fit.model)
+  if (model == "pref"){
+    dir = "figures/model3plus/"
+  }
+  else if (model == "rand"){
+    dir = "figures_rand/model3plus/"
+  }
+  
+  make.plots(dir, dataset, LANG, trick.model, fit.model, model)
   
   return (list(
     RSS = RSS_,
@@ -90,12 +106,18 @@ study.fit.model <- function(dataset) {
   ))
 }
 
-all_datasets = c("dat1", "dat10",  "dat100", "dat1000")
+datasets_1 = c("dat1", "dat10", "dat100", "dat1000")
+datasets_2 = c("rdat1", "rdat10", "rdat100", "rdat1000")
 
-for (dataset in all_datasets) {
-  message(dataset, ":")
-  r = study.fit.model(dataset)
-  #message("    RSS=", round(r$RSS, 3))
-  message("    AIC=", round(r$AIC, 3))
-  message("    s=  ", round(r$s, 3))
+model = function(datasets, model){
+  for (dataset in datasets) {
+    message(dataset, ":")
+    r = study.fit.model(dataset, model)
+    #message("    RSS=", round(r$RSS, 3))
+    message("    AIC=", round(r$AIC, 3))
+    message("    s=  ", round(r$s, 3))
+  }
 }
+
+model(datasets_2, "rand")
+model(datasets_1, "pref")

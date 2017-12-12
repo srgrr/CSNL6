@@ -1,13 +1,18 @@
 library(functional)
 
-k_func = function(t, den){
+k_func1 = function(t){
   m0 = 5
   f = m0*t^0.5
-  out = f/sqrt(den)
-  return(out)
+  return(f)
 }
 
-make.plots <- function(dir, lang, data, fit.model) {
+k_func2 = function(t){
+  m0 = 5
+  f = m0 * log(m0 + t -1)
+  return(f)
+}
+
+make.plots <- function(dir, lang, data, fit.model, model) {
   
   make.title.fit.model <- function() {
     a = coef(fit.model)[2]
@@ -26,12 +31,16 @@ make.plots <- function(dir, lang, data, fit.model) {
        main = make.title.fit.model()
   )
   lines(data$t, fitted(fit.model), col = "green")
-  k_f = Curry(k_func, den = eval(parse(text = substr(lang, start = 4, stop = nchar(lang)))))
-  curve(k_f, from = 1000, to = 100000 ,col="red", add= T)
+  if (model == "pref"){
+    curve(k_func1, from = 1000, to = 100000 ,col="red", add= T)
+  }
+  else if(model == "rand"){
+    curve(k_func2, from = 1000, to = 100000 ,col="red", add= T)
+  }
   dev.off()
 }
 
-study.fit.model <- function(lang) {
+study.fit.model <- function(lang, model) {
   filename = paste0(lang, ".csv")
   
   LANG = read.table(filename, header = TRUE, row.names = 1, sep = ",")
@@ -49,7 +58,14 @@ study.fit.model <- function(lang) {
   AIC_ <- AIC(fit.model)
   s_ <- sqrt(RSS_/df.residual(fit.model))
   
-  make.plots("figures/model0plus/", lang, LANG, fit.model)
+  if (model == "pref"){
+    dir = "figures/model0plus/"
+  }
+  else if (model == "rand"){
+    dir = "figures_rand/model0plus/"
+  }
+  
+  make.plots(dir, lang, LANG, fit.model, model)
   
   return (list(
     RSS = RSS_,
@@ -58,12 +74,18 @@ study.fit.model <- function(lang) {
   ))
 }
 
-datasets = c("dat1", "dat10", "dat100", "dat1000")
+datasets_1 = c("dat1", "dat10", "dat100", "dat1000")
+datasets_2 = c("rdat1", "rdat10", "rdat100", "rdat1000")
 
-for (dataset in datasets) {
-  message(dataset, ":")
-  r = study.fit.model(dataset)
-  #message("    RSS=", round(r$RSS, 3))
-  message("    AIC=", round(r$AIC, 3))
-  message("    s=  ", round(r$s, 3))
+model = function(datasets, model){
+  for (dataset in datasets) {
+    message(dataset, ":")
+    r = study.fit.model(dataset, model)
+    #message("    RSS=", round(r$RSS, 3))
+    message("    AIC=", round(r$AIC, 3))
+    message("    s=  ", round(r$s, 3))
+  }
 }
+
+model(datasets_2, "rand")
+model(datasets_1, "pref")
