@@ -45,7 +45,7 @@ std::vector< int > stub_vector(std::vector< std::vector< int > >& g) {
 }
 
 std::vector< std::vector< int > > random_network(int n0, int m0, int T) {
-  auto g = random_tree(n0);
+  auto g = simple_cycle(n0);
   auto stubs = stub_vector(g);
   for(int i = 0; i < T; ++i) {
     int vertex_id = n0 + i;
