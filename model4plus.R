@@ -1,18 +1,19 @@
-library(minpack.lm)
 
 make.plots <- function(dir, lang, data, trick.model, fit.model, model) {
   
   make.title.trick.model <- function() {
     a = coef(trick.model)[1]
     
-    title = paste0(lang, " (ln(y) = ", "0.5 * log(t) + log(", round(a, 3), ")")
+    title = paste0(lang, " (y = ", "log(t))")
     return (title)
   }
   
   make.title.fit.model <- function() {
     a = coef(fit.model)[1]
+    d1 = coef(fit.model)["d1"]
+    d2 = coef(fit.model)["d2"]
     
-    title = paste0(lang, " (y = ", a, " * t ^ 0.5)")
+    title = paste0(lang, " (y = ", round(a,3), " * log(t + ", round(d1,3),") + ", round(d2,3),")")
     return (title)
   }
   
@@ -55,15 +56,31 @@ study.fit.model <- function(dataset, model) {
   )
   
   a_initial = coef(trick.model)[1]
-  d1_initial = 0
-  d2_initial = 0
+  d1_initial = 0.01
+  d2_initial = -10
   
-  fit.model = nlsLM(
-    formula = k ~ a * log(t + d1) + d2,
-    data = LANG,
-    start = list(a = a_initial, d1 = d1_initial, d2 = d2_initial),
-    trace = FALSE
-  )
+  if (model == "nogro"){
+    d1_initial = 0.0000001
+    fit.model = nls(
+      formula = k ~ a * log(t + d1) + d2,
+      data = LANG,
+      start = list(a = a_initial, d1 = d1_initial, d2 = d2_initial),
+      algorithm = "port",
+      lower = c(-Inf, 0.0000001, -Inf),
+      upper = c(+Inf, 0.0000001, +Inf),
+      trace = TRUE
+    )
+  }
+  else {
+    fit.model = nls(
+      formula = k ~ a * log(t + d1) + d2,
+      data = LANG,
+      start = list(a = a_initial, d1 = d1_initial, d2 = d2_initial),
+      algorithm = "port",
+      lower = c(-Inf, 0.00001, -Inf),
+      trace = TRUE
+    )
+  }
   
   RSS_ <- deviance(fit.model)
   AIC_ <- AIC(fit.model)
@@ -99,9 +116,9 @@ model = function(datasets, model){
     #message("    RSS=", round(r$RSS, 3))
     message("    AIC=", round(r$AIC, 3))
     message("    s=  ", round(r$s, 3))
-  }s
+  }
 }
 
 model(datasets_3, "nogro")
-# model0(datasets_2, "rand")
-# model0(datasets_1, "pref")
+model0(datasets_2, "rand")
+model0(datasets_1, "pref")

@@ -1,18 +1,18 @@
-library(minpack.lm)
 
 make.plots <- function(dir, lang, data, trick.model, fit.model, model) {
   
   make.title.trick.model <- function() {
     a = coef(trick.model)[1]
     
-    title = paste0(lang, " (ln(y) = ", "0.5 * log(t) + log(", round(a, 3), ")")
+    title = paste0(lang, " (y = ", "log(t))")
     return (title)
   }
   
   make.title.fit.model <- function() {
-    a = coef(fit.model)[1]
+    a = coef(fit.model)["a"]
+    d = coef(fit.model)["d"]
     
-    title = paste0(lang, " (y = ", a, " * t ^ 0.5)")
+    title = paste0(lang, " (y = ", round(a,3), " * log(t + ", round(d,3),"))")
     return (title)
   }
   
@@ -55,16 +55,30 @@ study.fit.model <- function(dataset, model) {
   )
   
   a_initial = coef(trick.model)[1]
-  d_initial = 0
+  d_initial = 10
+  mint = -min(LANG$t) + 1
   
-  mint = - max(LANG$t)
+  if (model == "nogro"){
+    fit.model = nls(
+      formula = k ~ a * log(t + d),
+      data = LANG,
+      start = list(a = a_initial, d = d_initial),
+      algorithm = "port",
+      lower = c(-Inf, 0.0000001),
+      trace = TRUE
+    )
+  }
+  else {
+    fit.model = nls(
+      formula = k ~ a * log(t + d),
+      data = LANG,
+      start = list(a = a_initial, d = d_initial),
+      trace = TRUE,
+      algorithm = "port",
+      lower = c(-Inf, mint)
+    )
+  }
   
-  fit.model = nlsLM(
-    formula = k ~ a * log(t + d),
-    data = LANG,
-    start = list(a = a_initial, d = d_initial),
-    trace = FALSE
-  )
   
   RSS_ <- deviance(fit.model)
   AIC_ <- AIC(fit.model)
@@ -104,5 +118,5 @@ model0 = function(datasets, model){
 }
 
 model0(datasets_3, "nogro")
-# model0(datasets_2, "rand")
-# model0(datasets_1, "pref")
+model0(datasets_2, "rand")
+model0(datasets_1, "pref")
