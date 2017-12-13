@@ -8,7 +8,7 @@ k_func1 = function(t){
 
 k_func2 = function(t){
   m0 = 5
-  f = m0 * log(m0 + t -1)
+  f = m0 * log(m0 + t - 1)
   return(f)
 }
 
@@ -75,9 +75,18 @@ study.fit.model <- function(dataset, model) {
     LANG
   )
   
-  a_initial = exp(coef(trick.model)[1])
-  c_initial = coef(trick.model)[2]
-  d_initial = 0
+  
+  if (model == "rand"){
+    a_initial = exp(coef(trick.model)[1])
+    c_initial = coef(trick.model)[2]
+    d_initial = 1000
+  }
+  else if (model == "pref"){
+    a_initial = -exp(coef(trick.model)[1])
+    c_initial = -coef(trick.model)[2]
+    d_initial = 1000
+  }
+  print(c( "a" = a_initial, "c" = c_initial, "d" = d_initial))
   
   fit.model = nls(
     formula = k ~ a * exp(c * t) + d,
@@ -118,6 +127,7 @@ model = function(datasets, model){
     message("    s=  ", round(r$s, 3))
   }
 }
+
 
 model(datasets_2, "rand")
 model(datasets_1, "pref")
