@@ -1,17 +1,3 @@
-library(functional)
-
-k_func1 = function(t){
-  m0 = 5
-  f = m0*t^0.5
-  return(f)
-}
-
-k_func2 = function(t){
-  m0 = 5
-  f = m0 * log(m0 + t -1)
-  return(f)
-}
-
 make.plots <- function(dir, lang, data, trick.model, fit.model, model) {
   
   make.title.trick.model <- function() {
@@ -51,12 +37,6 @@ make.plots <- function(dir, lang, data, trick.model, fit.model, model) {
        main = make.title.fit.model()
   )
   lines(data$t, fitted(fit.model), col = "green")
-  if (model == "pref"){
-    curve(k_func1, from = 1000, to = 100000 ,col="red", add= T)
-  }
-  else if(model == "rand"){
-    curve(k_func2, from = 1000, to = 100000 ,col="red", add= T)
-  }
   dev.off()
 }
 
