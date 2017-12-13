@@ -76,7 +76,12 @@ study.fit.model <- function(dataset, model) {
   
   a_initial = exp(coef(trick.model)[1])
   b_initial = coef(trick.model)[2]
-  d_initial = 0.21
+  if (model == "pref"){
+    d_initial = 0
+  }
+  else if (model == "rand"){
+    d_initial = -300
+  }
   
   fit.model = nls(
     formula = k ~ a*(t^b) + d,

@@ -1,4 +1,5 @@
 library(functional)
+library(minpack.lm)
 
 k_func1 = function(t){
   m0 = 5
@@ -73,13 +74,15 @@ study.fit.model <- function(dataset, model) {
   )
   
   a_initial = coef(trick.model)[1]
-  d_initial = 25
+  d_initial = 0
   
-  fit.model = nls(
+  mint = - max(LANG$t)
+  
+  fit.model = nlsLM(
     formula = k ~ a * log(t + d),
     data = LANG,
     start = list(a = a_initial, d = d_initial),
-    trace = FALSE
+    trace = TRUE
   )
   
   RSS_ <- deviance(fit.model)
