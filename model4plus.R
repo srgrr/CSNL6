@@ -1,4 +1,5 @@
 library(functional)
+library(minpack.lm)
 
 k_func1 = function(t){
   m0 = 5
@@ -73,10 +74,10 @@ study.fit.model <- function(dataset, model) {
   )
   
   a_initial = coef(trick.model)[1]
-  d1_initial = 25
+  d1_initial = 0
   d2_initial = 0
   
-  fit.model = nls(
+  fit.model = nlsLM(
     formula = k ~ a * log(t + d1) + d2,
     data = LANG,
     start = list(a = a_initial, d1 = d1_initial, d2 = d2_initial),
