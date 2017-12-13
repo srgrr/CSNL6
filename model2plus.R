@@ -62,6 +62,9 @@ study.fit.model <- function(dataset, model) {
   else if (model == "rand"){
     d_initial = -300
   }
+  else if (model == "nogro"){
+    d_initial = 10
+  }
   
   fit.model = nls(
     formula = k ~ a*(t^b) + d,
@@ -80,6 +83,9 @@ study.fit.model <- function(dataset, model) {
   else if (model == "rand"){
     dir = "figures_rand/model2plus/"
   }
+  else if (model == "nogro"){
+    dir = "figures_nogro/model2plus/"
+  }
   
   make.plots(dir, dataset, LANG, trick.model, fit.model, model)
   
@@ -92,6 +98,7 @@ study.fit.model <- function(dataset, model) {
 
 datasets_1 = c("dat1", "dat10", "dat100", "dat1000")
 datasets_2 = c("rdat1", "rdat10", "rdat100", "rdat1000")
+datasets_3 = c("ndat1", "ndat10", "ndat100", "ndat1000")
 
 model = function(datasets, model){
   for (dataset in datasets) {
@@ -103,5 +110,6 @@ model = function(datasets, model){
   }
 }
 
-model(datasets_2, "rand")
-model(datasets_1, "pref")
+model(datasets_3, "nogro")
+# model(datasets_2, "rand")
+# model(datasets_1, "pref")

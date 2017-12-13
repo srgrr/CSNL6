@@ -5,6 +5,8 @@ dat10 = dat[which(dat[,1] == 10),]
 dat100 = dat[which(dat[,1] == 100),]
 dat1000 = dat[which(dat[,1] == 1000),]
 
+write.csv(dat1000[,2:3], "ndat1000.csv")
+
 plot(dat1$t, dat1$k*sqrt(1), type = "l", col = "green",
      xlab = "t", ylab = "k", ylim = c(0, 2500))
 lines(dat1000$k * sqrt(1000), col = "blue")
@@ -18,3 +20,7 @@ plot(rdat1$t, rdat1$k * (m0 * log(m0 + 1 - 1) - m0), type = "l", col = "green",
 lines(rdat1000$k * (m0 * log(m0 + 1000 - 1) - m0), col = "blue")
 lines(rdat10$k * (m0 * log(m0 + 10 - 1) - m0), col = "red")
 lines(rdat100$k * (m0 * log(m0 + 100 - 1) - m0), col = "yellow")
+
+
+
+

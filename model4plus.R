@@ -75,6 +75,10 @@ study.fit.model <- function(dataset, model) {
   else if (model == "rand"){
     dir = "figures_rand/model4plus/"
   }
+  else if (model == "nogro"){
+    dir = "figures_nogro/model4plus/"
+  }
+  
   make.plots(dir, dataset, LANG, trick.model, fit.model, model)
   
   return (list(
@@ -86,16 +90,18 @@ study.fit.model <- function(dataset, model) {
 
 datasets_1 = c("dat1", "dat10", "dat100", "dat1000")
 datasets_2 = c("rdat1", "rdat10", "rdat100", "rdat1000")
+datasets_3 = c("ndat1", "ndat10", "ndat100", "ndat1000")
 
-model0 = function(datasets, model){
+model = function(datasets, model){
   for (dataset in datasets) {
     message(dataset, ":")
     r = study.fit.model(dataset, model)
     #message("    RSS=", round(r$RSS, 3))
     message("    AIC=", round(r$AIC, 3))
     message("    s=  ", round(r$s, 3))
-  }
+  }s
 }
 
-model0(datasets_2, "rand")
-model0(datasets_1, "pref")
+model(datasets_3, "nogro")
+# model0(datasets_2, "rand")
+# model0(datasets_1, "pref")

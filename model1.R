@@ -71,6 +71,9 @@ study.fit.model <- function(dataset, model) {
   else if (model == "rand"){
     dir = "figures_rand/model1/"
   }
+  else if (model == "nogro"){
+    dir = "figures_nogro/model1/"
+  }
   
   make.plots(dir, dataset, LANG, trick.model, fit.model, model)
   
@@ -95,5 +98,6 @@ model = function(datasets, model){
   }
 }
 
+model(datasets_3, "nogro")
 model(datasets_2, "rand")
 model(datasets_1, "pref")

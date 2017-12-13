@@ -209,5 +209,7 @@ aic_deg_rand = get_aics(deg_rand[,1])
 
 maxdeg_rand = max(deg_rand[,1])
 hist(sort(deg_rand[,1], decreasing = TRUE), probability = T, breaks = 50)
-lines(zeta_distro(coef(aic_deg_rand[[4]]), seq(1,maxdeg_rand)), type = "l", col = "red")
+lines(disp_geom(coef(aic_deg_rand[[2]]), seq(1,maxdeg_rand)), type = "l", col = "red")
+
+
 

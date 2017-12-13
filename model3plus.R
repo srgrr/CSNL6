@@ -1,4 +1,4 @@
-
+library(minpack.lm)
 
 make.plots <- function(dir, lang, data, trick.model, fit.model, model) {
   
@@ -68,12 +68,17 @@ study.fit.model <- function(dataset, model) {
     c_initial = -coef(trick.model)[2]
     d_initial = 1000
   }
+  else if (model == "nogro"){
+    a_initial = -exp(coef(trick.model)[1])
+    c_initial = -coef(trick.model)[2]
+    d_initial = -1200
+  }
   
-  fit.model = nls(
+  fit.model = nlsLM(
     formula = k ~ a * exp(c * t) + d,
     data = LANG,
     start = list(a = a_initial, c = c_initial, d = d_initial),
-    trace = FALSE
+    trace = TRUE
   )
   
   RSS_ <- deviance(fit.model)
@@ -85,6 +90,9 @@ study.fit.model <- function(dataset, model) {
   }
   else if (model == "rand"){
     dir = "figures_rand/model3plus/"
+  }
+  else if (model == "nogro"){
+    dir = "figures_nogro/model3plus/"
   }
   
   make.plots(dir, dataset, LANG, trick.model, fit.model, model)
@@ -98,6 +106,7 @@ study.fit.model <- function(dataset, model) {
 
 datasets_1 = c("dat1", "dat10", "dat100", "dat1000")
 datasets_2 = c("rdat1", "rdat10", "rdat100", "rdat1000")
+datasets_3 = c("ndat1", "ndat10", "ndat100", "ndat1000")
 
 model = function(datasets, model){
   for (dataset in datasets) {
@@ -109,6 +118,6 @@ model = function(datasets, model){
   }
 }
 
-
-model(datasets_2, "rand")
-model(datasets_1, "pref")
+model(datasets_3, "nogro")
+# model(datasets_2, "rand")
+# model(datasets_1, "pref")

@@ -3,7 +3,7 @@ make.plots <- function(dir, lang, data, fit.model, model) {
   make.title.fit.model <- function() {
     a = coef(fit.model)[1]
     
-    title = paste0(lang, " (y = ", round(a, 3), "*x^",")")
+    title = paste0(lang, " (y = ", round(a, 3), "* x",")")
     return (title)
   }
   
@@ -43,6 +43,10 @@ study.fit.model0 <- function(lang, model) {
   else if (model == "rand"){
     dir = "figures_rand/model0/"
   }
+  else if (model == "nogro"){
+    dir = "figures_nogro/model0/"
+  }
+  
   make.plots(dir, lang, LANG, fit.model, model)
   
   return (list(
@@ -57,7 +61,7 @@ datasets_2 = c("rdat1", "rdat10", "rdat100", "rdat1000")
 datasets_3 = c("ndat1", "ndat10", "ndat100", "ndat1000")
 
 
-model0 = function(datasets, model){
+model = function(datasets, model){
   for (dataset in datasets) {
     message(dataset, ":")
     r = study.fit.model0(dataset, model)
@@ -67,6 +71,6 @@ model0 = function(datasets, model){
   }
 }
 
-model0(datasets_3, "pref")
+model(datasets_3, "nogro")
 #model0(datasets_2, "rand")
-#model0(datasets_1, "pref")
+#model0(datasets_1, "rpref")
