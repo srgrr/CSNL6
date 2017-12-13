@@ -1,5 +1,3 @@
-library(minpack.lm)
-
 make.plots <- function(dir, lang, data, trick.model, fit.model, model) {
   
   make.title.trick.model <- function() {
@@ -71,10 +69,10 @@ study.fit.model <- function(dataset, model) {
   else if (model == "nogro"){
     a_initial = -exp(coef(trick.model)[1])
     c_initial = -coef(trick.model)[2]
-    d_initial = -1200
+    d_initial = 600
   }
   
-  fit.model = nlsLM(
+  fit.model = nls(
     formula = k ~ a * exp(c * t) + d,
     data = LANG,
     start = list(a = a_initial, c = c_initial, d = d_initial),
