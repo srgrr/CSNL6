@@ -1,16 +1,4 @@
-library(functional)
 
-k_func1 = function(t){
-  m0 = 5
-  f = m0*t^0.5
-  return(f)
-}
-
-k_func2 = function(t){
-  m0 = 5
-  f = m0 * log(m0 + t -1)
-  return(f)
-}
 
 make.plots <- function(dir, lang, data, trick.model, fit.model, model) {
   
@@ -52,12 +40,6 @@ make.plots <- function(dir, lang, data, trick.model, fit.model, model) {
        main = make.title.fit.model()
   )
   lines(data$t, fitted(fit.model), col = "green")
-  if (model == "pref"){
-    curve(k_func1, from = 1000, to = 100000 ,col="red", add= T)
-  }
-  else if(model == "rand"){
-    curve(k_func2, from = 1000, to = 100000 ,col="red", add= T)
-  }
   dev.off()
 }
 
@@ -75,9 +57,17 @@ study.fit.model <- function(dataset, model) {
     LANG
   )
   
-  a_initial = exp(coef(trick.model)[1])
-  c_initial = coef(trick.model)[2]
-  d_initial = 0
+  
+  if (model == "rand"){
+    a_initial = exp(coef(trick.model)[1])
+    c_initial = coef(trick.model)[2]
+    d_initial = 1000
+  }
+  else if (model == "pref"){
+    a_initial = -exp(coef(trick.model)[1])
+    c_initial = -coef(trick.model)[2]
+    d_initial = 1000
+  }
   
   fit.model = nls(
     formula = k ~ a * exp(c * t) + d,
@@ -118,6 +108,7 @@ model = function(datasets, model){
     message("    s=  ", round(r$s, 3))
   }
 }
+
 
 model(datasets_2, "rand")
 model(datasets_1, "pref")

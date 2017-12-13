@@ -12,6 +12,10 @@ M <- 100
 C <- 12939
 Mprime <- 123912
 
+deg_pref = read.csv("degseq_pref.csv", header = FALSE)
+deg_rand = read.csv("degseq_random.csv", header = FALSE)
+
+
 # Given a degree distribution, set all the
 # variables (constants) to their proper values
 set_constants <- function(degree_sequence) {
@@ -185,3 +189,25 @@ get_aics <- function(degree_sequence) {
     )
   )
 }
+
+
+set_constants(deg_pref[,1])
+aic_deg_pref = get_aics(deg_pref[,1])
+
+disp_geom = function(q, k) q*(1 - q)^(k-1)
+zeta_distro = function(gam, k) k^(-gam) / zeta(gam)
+
+
+
+maxdeg_pref = max(deg_pref[,1])
+hist(sort(deg_pref[,1], decreasing = TRUE), probability = T, breaks = 50)
+lines(disp_geom(coef(aic_deg_pref[[2]]), seq(1,maxdeg_pref)), type = "l", col = "red")
+
+
+set_constants(deg_rand[,1])
+aic_deg_rand = get_aics(deg_rand[,1])
+
+maxdeg_rand = max(deg_rand[,1])
+hist(sort(deg_rand[,1], decreasing = TRUE), probability = T, breaks = 50)
+lines(zeta_distro(coef(aic_deg_rand[[4]]), seq(1,maxdeg_rand)), type = "l", col = "red")
+
