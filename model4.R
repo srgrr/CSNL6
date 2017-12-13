@@ -65,7 +65,7 @@ study.fit.model <- function(dataset, model) {
       start = list(a = a_initial, d = d_initial),
       algorithm = "port",
       lower = c(-Inf, 0.0000001),
-      trace = TRUE
+      trace = FALSE
     )
   }
   else {
@@ -73,12 +73,13 @@ study.fit.model <- function(dataset, model) {
       formula = k ~ a * log(t + d),
       data = LANG,
       start = list(a = a_initial, d = d_initial),
-      trace = TRUE,
+      trace = FALSE,
       algorithm = "port",
       lower = c(-Inf, mint)
     )
   }
   
+  print(c(coef(fit.model)["a"], coef(fit.model)["d"]))
   
   RSS_ <- deviance(fit.model)
   AIC_ <- AIC(fit.model)
@@ -107,16 +108,19 @@ datasets_1 = c("dat1", "dat10", "dat100", "dat1000")
 datasets_2 = c("rdat1", "rdat10", "rdat100", "rdat1000")
 datasets_3 = c("ndat1", "ndat10", "ndat100", "ndat1000")
 
-model0 = function(datasets, model){
+model = function(datasets, model){
+  aic = c()
   for (dataset in datasets) {
     message(dataset, ":")
     r = study.fit.model(dataset, model)
     #message("    RSS=", round(r$RSS, 3))
     message("    AIC=", round(r$AIC, 3))
     message("    s=  ", round(r$s, 3))
+    aic = c(aic, round(r$AIC, 3))
   }
+  return(aic)
 }
 
-model0(datasets_3, "nogro")
-model0(datasets_2, "rand")
-model0(datasets_1, "pref")
+nogro_AIC4 = model(datasets_3, "nogro")
+rand_AIC4 = model(datasets_2, "rand")
+pref_AIC4 = model(datasets_1, "pref")

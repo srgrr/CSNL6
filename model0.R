@@ -62,15 +62,18 @@ datasets_3 = c("ndat1", "ndat10", "ndat100", "ndat1000")
 
 
 model = function(datasets, model){
+  aic = c()
   for (dataset in datasets) {
     message(dataset, ":")
     r = study.fit.model0(dataset, model)
     #message("    RSS=", round(r$RSS, 3))
     message("    AIC=", round(r$AIC, 3))
     message("    s=  ", round(r$s, 3))
+    aic = c(aic, round(r$AIC, 3))
   }
+  return(aic)
 }
 
-model(datasets_3, "nogro")
-#model0(datasets_2, "rand")
-#model0(datasets_1, "rpref")
+nogro_AIC0 = model(datasets_3, "nogro")
+rand_AIC0 = model(datasets_2, "rand")
+pref_AIC0 = model(datasets_1, "pref")

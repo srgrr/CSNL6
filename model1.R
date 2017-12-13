@@ -3,7 +3,7 @@ make.plots <- function(dir, lang, data, trick.model, fit.model, model) {
   make.title.trick.model <- function() {
     a = coef(trick.model)[1]
     
-    title = paste0(lang, " (ln(y) = ", "0.5 * log(t) + log(", round(a, 3), ")")
+    title = paste0(lang, " (ln(y) = ", "0.5 * log(t) + log(", round(a, 3), "))")
     return (title)
   }
   
@@ -89,15 +89,18 @@ datasets_2 = c("rdat1", "rdat10", "rdat100", "rdat1000")
 datasets_3 = c("rdat1", "rdat10", "rdat100", "rdat1000")
 
 model = function(datasets, model){
+  aic = c()
   for (dataset in datasets) {
     message(dataset, ":")
     r = study.fit.model(dataset, model)
     #message("    RSS=", round(r$RSS, 3))
     message("    AIC=", round(r$AIC, 3))
     message("    s=  ", round(r$s, 3))
+    aic = c(aic, round(r$AIC, 3))
   }
+  return(aic)
 }
 
-model(datasets_3, "nogro")
-model(datasets_2, "rand")
-model(datasets_1, "pref")
+nogro_AIC1 = model(datasets_3, "nogro")
+rand_AIC1 = model(datasets_2, "rand")
+pref_AIC1 = model(datasets_1, "pref")
