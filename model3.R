@@ -6,7 +6,7 @@ k_func1 = function(t){
   return(f)
 }
 
-k_func2 = function(t){
+k_func2 = function(t) {
   m0 = 5
   f = m0 * log(m0 + t -1)
   return(f)

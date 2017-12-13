@@ -1,9 +1,11 @@
 import subprocess
 import matplotlib.pyplot as plt
 import sys
+from math import sqrt
 
 def f(n0, m0, t):
   return float(2.0 * m0 * t) / float(n0)
+
 
 def main():
   n0, m0, T = list(map(int, sys.argv[1:4]))

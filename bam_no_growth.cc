@@ -62,7 +62,7 @@ std::vector< std::vector< int > > random_network(int n0, int m0, int T) {
         already_added.insert(u);
       } else --j;
     }
-    for(auto x : g.back()) {
+    for(auto x : g[vertex_id]) {
       stubs.push_back(x);
       stubs.push_back(vertex_id);
     }

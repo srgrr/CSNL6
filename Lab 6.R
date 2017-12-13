@@ -1,4 +1,4 @@
-dat = read.csv("out2.txt", sep = " ", header = FALSE)
+dat = read.csv("compact_nogrowth.txt", sep = " ", header = FALSE)
 colnames(dat) = c("node", "t", "k")
 dat1 = dat[which(dat[,1] == 1),]
 dat10 = dat[which(dat[,1] == 10),]

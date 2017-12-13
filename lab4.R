@@ -95,7 +95,7 @@ study.fit.model <- function(lang) {
 	))
 }
 
-all_datasets = c("dat1", "dat100", "dat1000")
+all_datasets = c("ndat1", "ndat100", "ndat1000")
 
 for (dataset in all_datasets) {
 	message(dataset, ":")

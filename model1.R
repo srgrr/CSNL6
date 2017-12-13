@@ -103,6 +103,7 @@ study.fit.model <- function(dataset, model) {
 
 datasets_1 = c("dat1", "dat10", "dat100", "dat1000")
 datasets_2 = c("rdat1", "rdat10", "rdat100", "rdat1000")
+datasets_3 = c("rdat1", "rdat10", "rdat100", "rdat1000")
 
 model = function(datasets, model){
   for (dataset in datasets) {

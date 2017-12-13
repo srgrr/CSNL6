@@ -49,7 +49,6 @@ std::vector< std::vector< int > > random_network(int n0, int m0, int T, std::vec
   auto stubs = stub_vector(g);
   for(int i = 0; i < T; ++i) {
     int vertex_id = random() % int(g.size());
-    g.push_back(std::vector< int >());
     std::set< int > already_added;
     already_added.insert(vertex_id);
     for(auto adj : g[vertex_id]) {
@@ -63,14 +62,12 @@ std::vector< std::vector< int > > random_network(int n0, int m0, int T, std::vec
         already_added.insert(u);
       } else --j;
     }
-    for(auto x : g.back()) {
+    for(auto x : g[vertex_id]) {
       stubs.push_back(x);
       stubs.push_back(vertex_id);
     }
     for(auto timestep : it) {
-      if(i+1 >= it.back()) {
-        std::cout << timestep << " " << i+1 << " " << g[n0 + timestep - 1].size() << std::endl;
-      }
+        std::cout << timestep << " " << i+1 << " " << g[timestep - 1].size() << std::endl;
     }
   }
   return g;
